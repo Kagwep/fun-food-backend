@@ -11,7 +11,7 @@ from .permissions import UserPermission
 class FriutCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = FruitssCategorie
-        fields = ("id","drink_name",)
+        fields = ("id","category_name",)
         
 class FruitCategoryViewset(viewsets.ModelViewSet):
     queryset = FruitssCategorie.objects.all()
