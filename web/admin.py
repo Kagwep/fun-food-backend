@@ -4,7 +4,7 @@ from .models import Order,whishlist,Categorie,CockTail,Food,Drink,DrinksCategori
 
 
 class DrinkAdmin(admin.ModelAdmin):
-    list_display = ('__all__',)
+    list_display = ("name","image","price","price","description","category","drink_category",)
     list_filter = ('drink_category',)
     
     search_fields = ('name',)
@@ -15,7 +15,7 @@ class DrinkAdmin(admin.ModelAdmin):
 admin.site.register(Drink, DrinkAdmin)
 
 class FruitAdmin(admin.ModelAdmin):
-    list_display = ('__all__',)
+    list_display = ("name","image","price","price","description","category","in_category",)
     list_filter = ('in_category',)
     
     search_fields = ('name',)

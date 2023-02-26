@@ -77,7 +77,7 @@ class FruitssCategorie(models.Model):
         ("Juices","Juices"),
     )
     
-    category_name = models.CharField(max_length=200,choices=cat)
+    category_name = models.CharField(max_length=200,choices=cat,default="Fruits")
     
     def __str__(self):
         return self.category_name
