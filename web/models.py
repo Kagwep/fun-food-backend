@@ -71,6 +71,17 @@ class DrinksCategorie(models.Model):
     def __str__(self):
         return self.drink_name
     
+class FruitssCategorie(models.Model):
+    cat = (
+        ("Fruits","Fruits"),
+        ("Juices","Juices"),
+    )
+    
+    category_name = models.CharField(max_length=200,choices=cat)
+    
+    def __str__(self):
+        return self.category_name
+    
 
     
     
@@ -82,7 +93,7 @@ class Food(models.Model):
     category = models.ForeignKey(Categorie,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.food_name
+        return self.name
 
 class Fruits(models.Model):
     name = models.CharField( max_length=400)
@@ -90,9 +101,10 @@ class Fruits(models.Model):
     description = models.TextField()
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Categorie,on_delete=models.CASCADE)
+    in_category = models.ForeignKey(FruitssCategorie,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.fruit_name
+        return self.name
     
     
 class Drink(models.Model):
@@ -104,7 +116,7 @@ class Drink(models.Model):
     drink_category = models.ForeignKey(DrinksCategorie,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.drink_name
+        return self.name
     
 class CockTail(models.Model):
     cocktail_name = models.CharField(max_length=200)
@@ -130,7 +142,7 @@ class Order(models.Model):
     
     
     def __str__(self):
-        return self.order_name
+        return self.item_id
     
 class whishlist(models.Model):
     category= models.IntegerField()
