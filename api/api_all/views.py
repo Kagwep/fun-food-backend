@@ -32,15 +32,15 @@ class FruitSerializer(serializers.ModelSerializer):
         
         
 class FoodHomeViewset(viewsets.ModelViewSet):
-    queryset = Food.objects.filter().order_by('id')[:5]
+    queryset = Food.objects.filter().order_by('id')[:3]
     serializer_class = FoodSerializer
 
 class DrinkHomeViewset(viewsets.ModelViewSet):
-    queryset = Drink.objects.filter().order_by('id')[:5]
+    queryset = Drink.objects.filter().order_by('id')[:3]
     serializer_class = DrinkSerializer
 
 class FruitHomeViewset(viewsets.ModelViewSet):
-    queryset = Fruits.objects.filter().order_by('id')[:5]
+    queryset = Fruits.objects.filter().order_by('id')[:3]
     serializer_class = FruitSerializer
 
 # class CombinedItemsSerializer(serializers.Serializer):
