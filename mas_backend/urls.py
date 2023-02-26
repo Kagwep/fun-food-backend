@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include("web.urls")),
     path('api/categories/', include("api.api_categories.urls")),
     path('api/drink_categories/', include("api.api_drinks_category.urls")),
+    path('api/fruit_categories/', include("api.api_fruits_category.urls")),
     path('api/foods/', include("api.api_food.urls")),
     path('api/drinks/', include("api.api_drinks.urls")),
     path('api/orders/', include("api.api_orders.urls")),
