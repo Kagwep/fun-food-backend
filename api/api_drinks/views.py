@@ -13,15 +13,15 @@ from .permissions import UserPermission
 class DrinksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drink
-        fields = ("id","name","image","price","price","description","category","drink_category")
+        fields = ("id","name","image","price","description","category","drink_category")
         
 class DrinksViewset(viewsets.ModelViewSet):
     queryset = Drink.objects.all()
     serializer_class = DrinksSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['product']
-    # search_fields = ['=product', 'product_image_id']
-    # ordering_fields = ['product', 'id']
-    # ordering = ['id']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['drink_category']
+    search_fields = ['=name', 'price']
+    ordering_fields = ['price', 'id']
+    ordering = ['id']

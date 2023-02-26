@@ -25,8 +25,8 @@ class FoodViewset(viewsets.ModelViewSet):
     serializer_class = FoodSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['product']
-    # search_fields = ['=product', 'product_image_id']
-    # ordering_fields = ['product', 'id']
-    # ordering = ['id']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['price']
+    search_fields = ['=name', 'description']
+    ordering_fields = ['price', 'id']
+    ordering = ['id']

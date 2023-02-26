@@ -23,8 +23,8 @@ class FruitsViewset(viewsets.ModelViewSet):
     serializer_class = FruitsSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['product']
-    # search_fields = ['=product', 'product_image_id']
-    # ordering_fields = ['product', 'id']
-    # ordering = ['id']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['in_category']
+    search_fields = ['=name', 'description']
+    ordering_fields = ['price', 'id']
+    ordering = ['id']
