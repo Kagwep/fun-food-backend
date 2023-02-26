@@ -101,7 +101,7 @@ class Fruits(models.Model):
     description = models.TextField()
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Categorie,on_delete=models.CASCADE)
-    in_category = models.ForeignKey(FruitssCategorie,on_delete=models.CASCADE)
+    in_category = models.ForeignKey(FruitssCategorie,on_delete=models.CASCADE,null=True)
     
     def __str__(self):
         return self.name
