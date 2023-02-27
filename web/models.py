@@ -22,11 +22,22 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, full_names, phone_number, location, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(full_names, phone_number, location, password, **extra_fields)
 
+    def create_superuser(self,full_names, phone_number, location,password=None):
+        user = self.create_user(
+            full_names = full_names,
+            location = location,
+            phone_number = phone_number,
+            password = password
+            
+        )
+
+        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+    
 class CustomUser(AbstractBaseUser):
     full_names = models.CharField(max_length=255, blank=False, null=False)
     phone_number = models.CharField(max_length=15, unique=True, blank=False, null=False)
@@ -34,6 +45,7 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = ['full_names', 'location']

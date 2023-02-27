@@ -42,3 +42,5 @@ class TokenViewSet(viewsets.ViewSet):
             'refresh': str(token),
             'user': str(user.id)
         })
+        
+        
