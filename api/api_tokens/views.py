@@ -24,15 +24,14 @@ class TokenViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         
         
-        phone_number = serializer.validated_data.get('phone_number')
-        
-        print("this",serializer.validated_data)
+        phone_number = request.data.get('phone_number')
         
         
         if phone_number is None:
             return Response({'error': 'Phone number is required'}, status=400)
         user = get_object_or_404(CustomUser, phone_number=phone_number)
-        test = CustomUser.objects.get(username = user)
+        print(user)
+        test = CustomUser.objects.get(full_names = user)
         print('test passed',test.id)
         print(user)
         print(phone_number)
