@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.forms.models import model_to_dict
 from django.shortcuts import render
 from web.models import CustomUser
 from rest_framework.response import Response
@@ -31,15 +32,15 @@ class TokenViewSet(viewsets.ViewSet):
             return Response({'error': 'Phone number is required'}, status=400)
         user = get_object_or_404(CustomUser, phone_number=phone_number)
         print(user)
-        test = CustomUser.objects.get(full_names = user)
-        print('test passed',test.id)
-        print(user)
+        user_det = CustomUser.objects.get(full_names = user)
+        print(user_det)
         print(phone_number)
+        user_details = model_to_dict(user_det)
         token = serializer.get_token(user)
         return Response({
             'access': str(token.access_token),
             'refresh': str(token),
-            'user': str(user.id)
+            'user': user_details,
         })
         
         
