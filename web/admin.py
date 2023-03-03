@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Order,whishlist,Categorie,CockTail,Food,Drink,DrinksCategorie,Fruits,FruitssCategorie,CustomUser
+from .models import Order,whishlist,Categorie,CockTail,Food,Drink,DrinksCategorie,Fruits,FruitssCategorie,CustomUser,PricessCategorie
 
 
 class DrinkAdmin(admin.ModelAdmin):
@@ -36,3 +36,4 @@ admin.site.register(CustomUser)
 
 admin.site.register(DrinksCategorie)
 admin.site.register(FruitssCategorie)
+admin.site.register(PricessCategorie)
