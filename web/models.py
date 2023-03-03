@@ -82,17 +82,31 @@ class DrinksCategorie(models.Model):
     
     def __str__(self):
         return self.drink_name
+
     
 class FruitssCategorie(models.Model):
     cat = (
         ("Fruits","Fruits"),
         ("Juices","Juices"),
+        ("Fruit Salad","Fruit Salad"),
     )
     
     category_name = models.CharField(max_length=200,choices=cat,default="Fruits")
     
     def __str__(self):
         return self.category_name
+    
+class PricessCategorie(models.Model):
+    cat = (
+        ("Normal","Normal"),
+        ("Advanced","Advanced"),
+        ("VIP","VIP"),
+    )
+    
+    p_name = models.CharField(max_length=200,choices=cat,default="Normal")
+    
+    def __str__(self):
+        return self.p_name
     
 
     
@@ -114,7 +128,7 @@ class Fruits(models.Model):
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Categorie,on_delete=models.CASCADE)
     in_category = models.ForeignKey(FruitssCategorie,on_delete=models.CASCADE,null=True)
-    
+    price_category = models.ForeignKey(PricessCategorie,on_delete=models.CASCADE,null=True)
     def __str__(self):
         return self.name
     
@@ -155,6 +169,9 @@ class Order(models.Model):
     
     def __str__(self):
         return self.item_id
+    
+# class OrderCheckout(models.Model):
+#     item_i
     
 class whishlist(models.Model):
     category= models.IntegerField()
