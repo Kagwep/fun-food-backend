@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'web',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 AUTH_USER_MODEL = 'web.CustomUser'
 
 ROOT_URLCONF = 'mas_backend.urls'
