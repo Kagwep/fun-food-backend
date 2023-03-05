@@ -5,7 +5,7 @@ from web.models import Order, Food, Drink, Fruits,Categorie
 # Create your views here.
 # Create your views here.
 from rest_framework import serializers, viewsets
-from web.models import Order
+from web.models import Order,CustomUser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -64,19 +64,24 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         
-        fields = ["id", "category", "item_id", "item_details","order_status","delivery_location","order_date"]
+        fields = ["id", "category","item_details", "item_id", "order_count","order_made_by","order_price","order_added_on"]
         
     def create(self, validated_data):
         
         category = validated_data.pop('category')
         item_id = validated_data.pop('item_id')
-        delivery_location = validated_data.pop('delivery_location')
+        order_count = validated_data.pop('order_count')
+        orderer = validated_data.pop('order_made_by')
+        order_price = validated_data.pop('order_price')
 
+        order_made_by = CustomUser.objects.get(id=orderer)
         
         new_order = Order.objects.create(
             category = category,
             item_id = item_id,
-            delivery_location = delivery_location,
+            order_count = order_count,
+            order_made_by = order_made_by,
+            order_price = order_price
            
         )
         
