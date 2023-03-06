@@ -24,7 +24,7 @@ class FruitsViewset(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['in_category']
+    filterset_fields = ['in_category','price_category']
     search_fields = ['=name', 'description']
     ordering_fields = ['price', 'id']
     ordering = ['id']
