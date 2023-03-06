@@ -16,7 +16,7 @@ admin.site.register(Drink, DrinkAdmin)
 
 class FruitAdmin(admin.ModelAdmin):
     list_display = ("name","image","price","price","description","category","in_category","price_category")
-    list_filter = ('in_category','price_category')
+    list_filter = ('in_category','price_category',)
     
     search_fields = ('name',)
     ordering = ('name','price')
