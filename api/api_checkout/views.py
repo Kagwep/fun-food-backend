@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from web.models import Order, Food, Drink, Fruits,Categorie,OrderCheckout,Checkout
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .permissions import UserPermission
 
 # # Create your views here.
 # class OrderCheckout(models.Model):
@@ -46,7 +49,9 @@ from rest_framework.response import Response
 class CheckoutSerializer(serializers.ModelSerializer):
     item_details = serializers.SerializerMethodField(read_only=True)
     items = serializers.ListField(child=serializers.CharField(), write_only=True)
-    
+    orderer = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
+    latitude = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
+    longitude = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
     
     def get_item_details(self, order):
         category = order.category
@@ -80,50 +85,89 @@ class CheckoutSerializer(serializers.ModelSerializer):
             print("all")
             return None
                 
-    
+    #     latitide = models.CharField(max_length=700)
+    # longitude = models.CharField(max_length=200)
     
         
 
     class Meta:
         model = OrderCheckout
         
-        fields = ["id", "category","item","item_details", "order_amount","order_price","order_made_by","order_price","order_date","delivery_location","items"]
+        fields = ["id","item_details",'latitude','longitude','orderer','items']
         
     def create(self, validated_data):
         items = validated_data.pop('items')
-        category = validated_data.pop('category')
-        item = validated_data.pop('item')
-        order_amount = validated_data.pop('order_count')
-        orderer = validated_data.pop('order_made_by')
-        order_price = validated_data.pop('order_price')
-        delivery_location = validated_data.pop('delivery_location')
+        # category = validated_data.pop('category')
+        # item = validated_data.pop('item')
+        # order_amount = validated_data.pop('order_count')
+        orderer = validated_data.pop('orderer')
+        # order_price = validated_data.pop('order_price')
+        latitude = validated_data.pop('latitude')
+        longitude = validated_data.pop('longitude')
         # order_status = validated_data.pop('order_status')
+
 
         order_made_by = CustomUser.objects.get(id=orderer)
         
+        
+    #         item_id = models.IntegerField()
+    # category= models.IntegerField()
+    # order_count = models.IntegerField()
+    # order_price = models.IntegerField()
+    # order_made_by = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    # order_added_on = models.DateTimeField(auto_now_add=True)
+    
+        
         order_total_price = 0
         
-        new_order = OrderCheckout.objects.create(
-            category = category,
-            item = item,
-            order_amount = order_amount,
-            order_made_by = order_made_by,
-            order_price = order_price,
-            delivery_location = delivery_location
-           
-        )
+        for el in items:
+            
+            order = Order.objects.get(id=el)
+            
+            order_total_price += order.order_price 
+        
+            new_order = OrderCheckout.objects.create(
+                category = order.category,
+                item = order.item_id,
+                order_amount = order.order_count,
+                order_made_by = order.order_made_by,
+                order_price = order.order_price,
+            
+            )
+            
+            order.delete()
         
         comp_order = Checkout.objects.create(
             
             orderer = order_made_by,
             ordered_items  = items,
             order_total_price = order_total_price,
-            delivery_location = delivery_location,
+            latitude = latitude,
+            longitude = longitude,
+            order_status = 1,
             
         )
         
-        return comp_order
+        return new_order
     
 class CheckoutViewset(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = CheckoutSerializer
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = (UserPermission,)
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['order_made_by']
+    # search_fields = ['=name', 'price']
+    ordering_fields = ['order_price', 'id']
+    ordering = ['id']
+    
+    
+class CompleteOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Checkout
+        fields = "__all__"
+    
+    
+class CompleteOrderViewset(viewsets.ModelViewSet):
+    queryset = Checkout.objects.all()
+    serializer_class = CompleteOrderSerializer

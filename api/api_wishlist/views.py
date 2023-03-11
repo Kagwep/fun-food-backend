@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 # Create your views here.
 from rest_framework import serializers, viewsets
-from web.models import whishlist,Categorie,Food,Fruits,Drink
+from web.models import whishlist,Categorie,Food,Fruits,Drink,CustomUser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -49,7 +49,7 @@ class WhishlistSerializer(serializers.ModelSerializer):
             return None
     class Meta:
         model = whishlist
-        fields = ("id","item_id","category","item_details")
+        fields = ("id","item_id","category","item_details","user")
         
         
     def create(self, validated_data):
@@ -57,12 +57,17 @@ class WhishlistSerializer(serializers.ModelSerializer):
         # category = Categorie.objects.get(name=category)
         # category = category.id
         item_id = validated_data.pop('item_id')
+        
+        user = validated_data.pop('user')
+        
+        user = CustomUser.objects.get(id=user)
       
 
         
         new_item = whishlist.objects.create(
             category = category,
             item_id = item_id,
+            user = user
  
         )
         
@@ -73,8 +78,8 @@ class WhishlistViewset(viewsets.ModelViewSet):
     serializer_class = WhishlistSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['product']
-    # search_fields = ['=product', 'product_image_id']
-    # ordering_fields = ['product', 'id']
-    # ordering = ['id']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['product']
+    search_fields = ['=product', 'product_image_id']
+    ordering_fields = ['product', 'id']
+    ordering = ['id']

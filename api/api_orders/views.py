@@ -74,13 +74,13 @@ class OrderSerializer(serializers.ModelSerializer):
         orderer = validated_data.pop('order_made_by')
         order_price = validated_data.pop('order_price')
 
-        order_made_by = CustomUser.objects.get(id=orderer)
+        # order_made_by = CustomUser.objects.get(id=orderer)
         
         new_order = Order.objects.create(
             category = category,
             item_id = item_id,
             order_count = order_count,
-            order_made_by = order_made_by,
+            order_made_by = orderer,
             order_price = order_price
            
         )
@@ -92,9 +92,9 @@ class OrderViewset(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['product']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['order_made_by']
     # search_fields = ['=product', 'product_image_id']
-    # ordering_fields = ['product', 'id']
-    # ordering = ['id']
+    ordering_fields = ['order_price', 'id']
+    ordering = ['id']
 

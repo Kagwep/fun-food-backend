@@ -161,6 +161,8 @@ class Order(models.Model):
     order_price = models.IntegerField()
     order_made_by = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     order_added_on = models.DateTimeField(auto_now_add=True)
+
+    
     
     
     def __str__(self):
@@ -170,11 +172,6 @@ class OrderCheckout(models.Model):
     item = models.IntegerField()
     category = models.IntegerField()
     order_amount = models.IntegerField()
-    order_status = (("Delivered","Delivered"),
-                    ("Pending","Pending")
-                    )
-    order_status = models.CharField(max_length=200,choices=order_status, default=order_status[1][0])
-    delivery_location = models.CharField(max_length=700)
     order_date = models.DateTimeField(auto_now_add=True)
     order_made_by = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     order_price = models.IntegerField()
@@ -184,11 +181,17 @@ class Checkout(models.Model):
     ordered_items = models.CharField(max_length=1000)
     order_total_price = models.IntegerField()
     order_placed_at = models,models.IntegerField()
-    delivery_location = models.CharField(max_length=700)
+    latitude = models.CharField(max_length=700,null=True)
+    longitude = models.CharField(max_length=200,null=True)
+    order_status = (("Delivered","Delivered"),
+                    ("Pending","Pending")
+                    )
+    order_status = models.CharField(max_length=200,choices=order_status, default=order_status[1][0],null=True)
     
 class whishlist(models.Model):
     category= models.IntegerField()
     item_id= models.IntegerField()
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.item_id
