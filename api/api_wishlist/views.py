@@ -60,7 +60,7 @@ class WhishlistSerializer(serializers.ModelSerializer):
         
         user = validated_data.pop('user')
         
-        user = CustomUser.objects.get(id=user)
+        # user = CustomUser.objects.get(id=user)
       
 
         
@@ -79,7 +79,7 @@ class WhishlistViewset(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['product']
-    search_fields = ['=product', 'product_image_id']
-    ordering_fields = ['product', 'id']
+    filterset_fields = ['id']
+    search_fields = ['=id', 'user']
+    ordering_fields = ['item_id', 'id']
     ordering = ['id']
