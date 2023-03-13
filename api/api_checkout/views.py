@@ -1,3 +1,5 @@
+import ast
+import string
 from django.shortcuts import render
 from web.models import Order, Food, Drink, Fruits,Categorie,OrderCheckout,Checkout
 from django_filters.rest_framework import DjangoFilterBackend
@@ -93,7 +95,8 @@ class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderCheckout
         
-        fields = ["id","item_details",'latitude','longitude','orderer','items']
+        fields = ["id","item_details",'latitude','longitude','orderer','items','order_amount', 'order_price']
+        read_only_fields = ['order_amount', 'order_price']
         
     def create(self, validated_data):
         items = validated_data.pop('items')
@@ -119,9 +122,13 @@ class CheckoutSerializer(serializers.ModelSerializer):
     
         
         order_total_price = 0
-        
-        for el in items:
-            
+        new_order_items = []
+        string = items[0]
+        numbers = string.split(',')
+        numbers = list(map(int, numbers))
+  
+        for el in numbers:
+            print(el)
             order = Order.objects.get(id=el)
             
             order_total_price += order.order_price 
@@ -135,12 +142,16 @@ class CheckoutSerializer(serializers.ModelSerializer):
             
             )
             
+            new_order_items.append(new_order.id)
+            
             order.delete()
+            
+        print(new_order_items)
         
         comp_order = Checkout.objects.create(
             
             orderer = order_made_by,
-            ordered_items  = items,
+            ordered_items  = new_order_items,
             order_total_price = order_total_price,
             latitude = latitude,
             longitude = longitude,
@@ -156,18 +167,59 @@ class CheckoutViewset(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['order_made_by']
+    filterset_fields = ['order_made_by','id']
     # search_fields = ['=name', 'price']
     ordering_fields = ['order_price', 'id']
     ordering = ['id']
-    
+ 
+    #  orderer =  orderer=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    # ordered_items = models.CharField(max_length=1000)
+    # order_total_price = models.IntegerField()
+    # order_placed_at = models.DateTimeField(auto_now_add=True)
+    # latitude = models.CharField(max_length=700,null=True)
+    # longitude = models.CharField(max_length=200,null=True)
+    # order_status = (("Delivered","Delivered"),
+    #                 ("Pending","Pending")
+    #                 )
+    # order_status   
     
 class CompleteOrderSerializer(serializers.ModelSerializer):
+    
+    order_placed_at = serializers.ReadOnlyField()
+    # status = serializers.SerializerMethodField(read_only=True)
+    status = serializers.CharField(source='order_status', read_only=True)
+    
     class Meta:
         model = Checkout
-        fields = "__all__"
+        fields = ["orderer","ordered_items","order_total_price","order_placed_at","latitude","longitude","order_status","order_placed_at","status"]
     
+    def get_status(self,obj):
+        return obj.order_status
     
 class CompleteOrderViewset(viewsets.ModelViewSet):
     queryset = Checkout.objects.all()
     serializer_class = CompleteOrderSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['order_status','id']
+    # search_fields = ['=name', 'price']
+    ordering_fields = ['order_total_price', 'id']
+    ordering = ['id']
+    
+class OderItemViewSet(viewsets.ModelViewSet):
+    queryset = OrderCheckout.objects.all()
+    serializer_class = CheckoutSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['order_made_by','id']
+    # search_fields = ['=name', 'price']
+    ordering_fields = ['order_price', 'id']
+    ordering = ['id']
+    
+    def list(self, request):
+        ids = request.query_params.get('ids')
+        if ids:
+            id_list = ids.split(',')
+            queryset = self.filter_queryset(self.get_queryset().filter(id__in=id_list))
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return super().list(request)

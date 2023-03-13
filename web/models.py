@@ -180,7 +180,7 @@ class Checkout(models.Model):
     orderer =  orderer=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     ordered_items = models.CharField(max_length=1000)
     order_total_price = models.IntegerField()
-    order_placed_at = models,models.IntegerField()
+    order_placed_at = models.DateTimeField(auto_now_add=True)
     latitude = models.CharField(max_length=700,null=True)
     longitude = models.CharField(max_length=200,null=True)
     order_status = (("Delivered","Delivered"),
