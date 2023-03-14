@@ -79,7 +79,7 @@ class WhishlistViewset(viewsets.ModelViewSet):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['id']
+    filterset_fields = ['id','user']
     search_fields = ['=id', 'user']
     ordering_fields = ['item_id', 'id']
     ordering = ['id']

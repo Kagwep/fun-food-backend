@@ -200,7 +200,7 @@ class CompleteOrderViewset(viewsets.ModelViewSet):
     queryset = Checkout.objects.all()
     serializer_class = CompleteOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['order_status','id']
+    filterset_fields = ['order_status','id','orderer']
     # search_fields = ['=name', 'price']
     ordering_fields = ['order_total_price', 'id']
     ordering = ['id']
