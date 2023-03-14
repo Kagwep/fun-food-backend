@@ -54,7 +54,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
     orderer = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
     latitude = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
     longitude = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
-    
+    order_number = serializers.CharField(write_only =True,required= False,allow_blank= True,allow_null=False)
     def get_item_details(self, order):
         category = order.category
         item = order.item
@@ -95,7 +95,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderCheckout
         
-        fields = ["id","item_details",'latitude','longitude','orderer','items','order_amount', 'order_price']
+        fields = ["id","item_details",'latitude','longitude','orderer','items','order_amount', 'order_price','order_number']
         read_only_fields = ['order_amount', 'order_price']
         
     def create(self, validated_data):
@@ -108,7 +108,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
         latitude = validated_data.pop('latitude')
         longitude = validated_data.pop('longitude')
         # order_status = validated_data.pop('order_status')
-
+        order_number = validated_data.pop('order_number')
 
         order_made_by = CustomUser.objects.get(id=orderer)
         
@@ -156,13 +156,14 @@ class CheckoutSerializer(serializers.ModelSerializer):
             latitude = latitude,
             longitude = longitude,
             order_status = 1,
+            order_number = order_number,
             
         )
         
         return new_order
     
 class CheckoutViewset(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
+    queryset = OrderCheckout.objects.all()
     serializer_class = CheckoutSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (UserPermission,)
@@ -187,21 +188,21 @@ class CompleteOrderSerializer(serializers.ModelSerializer):
     
     order_placed_at = serializers.ReadOnlyField()
     # status = serializers.SerializerMethodField(read_only=True)
-    status = serializers.CharField(source='order_status', read_only=True)
+    status = serializers.SerializerMethodField()
     
     class Meta:
         model = Checkout
-        fields = ["orderer","ordered_items","order_total_price","order_placed_at","latitude","longitude","order_status","order_placed_at","status"]
+        fields = ["orderer","ordered_items","order_total_price","order_placed_at","latitude","longitude","order_status","order_placed_at","status","order_number"]
     
-    def get_status(self,obj):
-        return obj.order_status
+    def get_status(self, obj):
+        return obj.get_order_status_display()
     
 class CompleteOrderViewset(viewsets.ModelViewSet):
     queryset = Checkout.objects.all()
     serializer_class = CompleteOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['order_status','id','orderer']
-    # search_fields = ['=name', 'price']
+    filterset_fields = ['order_status','id','orderer',]
+    search_fields = ['order_total_price', 'order_number']
     ordering_fields = ['order_total_price', 'id']
     ordering = ['id']
     

@@ -187,6 +187,7 @@ class Checkout(models.Model):
                     ("Pending","Pending")
                     )
     order_status = models.CharField(max_length=200,choices=order_status, default=order_status[1][0],null=True)
+    order_number = models.CharField(max_length=100)
     
 class whishlist(models.Model):
     category= models.IntegerField()
