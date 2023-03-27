@@ -169,7 +169,7 @@ class CheckoutViewset(viewsets.ModelViewSet):
     # permission_classes = (UserPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['order_made_by','id']
-    # search_fields = ['=name', 'price']
+    search_fields = ['order_number', 'id']
     ordering_fields = ['order_price', 'id']
     ordering = ['id']
  
