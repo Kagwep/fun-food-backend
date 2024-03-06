@@ -93,11 +93,11 @@ WSGI_APPLICATION = 'mas_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': "django.db.backends.postgresql_psycopg2",
-        'HOST': "db.htexekyaxiyxfoytsiti.supabase.co",
-        'NAME': "postgres",
-        'USER': "postgres",
-        'PASSWORD': "@funfood2023",
-        'PORT': "5432",
+        'HOST': os.environ['HOST'],
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['USER'],
+        'PASSWORD': os.environ['PASSWORD'],
+        'PORT': os.environ['PORT'],
 
     }
 }
